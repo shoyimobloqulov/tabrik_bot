@@ -44,7 +44,7 @@ def start_message(message):
     bot.send_message(
         message.chat.id,
         text,
-        markup=markup,
+        reply_markup=markup,
         parse_mode="HTML"
     )
 
