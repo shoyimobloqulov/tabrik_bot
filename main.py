@@ -17,11 +17,10 @@ def start_message(message):
     btn2 = types.KeyboardButton("🎉 Tabriklar")
     btn3 = types.KeyboardButton("📘 Qo'llanma")
     btn4 = types.KeyboardButton("👨‍💻 Admin")
-    btn5 = types.KeyboardButton("📄 Sertifikat")
 
     markup.row(btn1)
     markup.row(btn2, btn3)
-    markup.row(btn4, btn5)
+    markup.row(btn4)
 
     bot.send_message(
         message.chat.id,
@@ -96,5 +95,23 @@ def guide_info(message):
         parse_mode="Markdown"
     )
 
+# Tabriklar bo'limi
+@bot.message_handler(func=lambda m: m.text == "🎉 Tabriklar")
+def open_tabrik_webapp(message):
+    webapp_url = "https://yourdomain.com/tabrik"   # <-- sahifangiz URL
+    
+    markup = types.InlineKeyboardMarkup()
+    btn = types.InlineKeyboardButton(
+        text="🎉 Tabrik yozish",
+        web_app=types.WebAppInfo(url=webapp_url)
+    )
+
+    markup.add(btn)
+
+    bot.send_message(
+        message.chat.id,
+        "Quyidagi tugmani bosing va tabrik yarating:",
+        reply_markup=markup
+    )
 
 bot.infinity_polling()
