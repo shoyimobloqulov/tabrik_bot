@@ -98,7 +98,7 @@ def guide_info(message):
 # Tabriklar bo'limi
 @bot.message_handler(func=lambda m: m.text == "🎉 Tabriklar")
 def open_tabrik_webapp(message):
-    webapp_url = "https://yourdomain.com/tabrik"   # <-- sahifangiz URL
+    webapp_url = "../tabrik"   # <-- sahifangiz URL
     
     markup = types.InlineKeyboardMarkup()
     btn = types.InlineKeyboardButton(
