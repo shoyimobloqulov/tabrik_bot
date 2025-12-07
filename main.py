@@ -22,10 +22,29 @@ def start_message(message):
     markup.row(btn2, btn3)
     markup.row(btn4)
 
+    user = message.from_user
+
+    # Foydalanuvchi nomi
+    full_name = user.first_name
+    if user.last_name:
+        full_name += f" {user.last_name}"
+
+    # Agar username bo'lsa
+    if user.username:
+        profile_link = f"https://t.me/{user.username}"
+    else:
+        # Agar username bo'lmasa ID orqali link
+        profile_link = f"tg://user?id={user.id}"
+
+    # Clickable name
+    clickable_name = f'<a href="{profile_link}">{full_name}</a>'
+
+    text = f"Assalomu alaykum, {clickable_name}! 👋\nProfilingizga o‘tish uchun ismingizni bosing."
+
     bot.send_message(
         message.chat.id,
-        "Assalomu alaykum! 🎉\nQuyidagi tugmalardan birini tanlang:",
-        reply_markup=markup
+        text,
+        parse_mode="HTML"
     )
 
 @bot.message_handler(func=lambda m: m.text == "🎄 Yangi yilga necha kun qoldi?")
