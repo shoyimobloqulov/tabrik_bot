@@ -3,6 +3,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 import io
 import os
 from datetime import datetime
+from new_year_data import congratulations, templates
 
 app = Flask(__name__)
 app.secret_key = "replace-with-a-secure-key"
@@ -32,80 +33,54 @@ def draw_centered_text(draw, text, font, box_center_x, y, max_width=None):
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("index.html")
 
+    return render_template("index.html",congratulations=congratulations,templates=templates)
+
+# =======================  GENERATION  =========================
 @app.route("/generate", methods=["POST"])
 def generate():
-    name = request.form.get("name", "").strip()
-    info = request.form.get("info", "").strip()
-    date_text = request.form.get("date", "").strip()
+    name = request.form.get("name")
+    info = request.form.get("info", "")
+    date = request.form.get("date", "")
+    template_file = request.form.get("template")
 
-    if not name:
-        flash("Iltimos, ismni kiriting.")
-        return redirect(url_for("index"))
+    print(f"Generating certificate for: {name}, {info}, {date}, template: {template_file}")
 
-    # Agar foydalanuvchi sana bermagan bo'lsa, hozirgi sanani qo'yamiz
-    if not date_text:
-        date_text = datetime.now().strftime("%d %B %Y")  # 07 December 2025 kabi
+    if not name or not template_file:
+        return "Xato: Ism yoki shablon tanlanmagan!"
 
-    # Ochiq certificate template
-    try:
-        base = Image.open(TEMPLATE_PATH).convert("RGBA")
-    except FileNotFoundError:
-        flash("Sertifikat shabloni topilmadi (static/certificate_template.png).")
-        return redirect(url_for("index"))
-
-    image = base.copy()
+    # --- Shablon rasmni yuklash ---
+    template_path = f"static/templates/{template_file}"
+    image = Image.open(template_path).convert("RGBA")
     draw = ImageDraw.Draw(image)
 
-    # Font o'lchamlari (sertifikat o'lchamiga qarab sozlang)
-    img_w, img_h = image.size
-    # nom va info uchun dinamik bazaviy o'lcham
-    name_font_size = max(36, img_w // 15)
-    info_font_size = max(20, img_w // 40)
-    date_font_size = max(16, img_w // 60)
+    # --- Fontlar ---
+    font_name = ImageFont.truetype("arial.ttf", 80)
+    font_info = ImageFont.truetype("arial.ttf", 40)
+    font_date = ImageFont.truetype("arial.ttf", 40)
 
-    try:
-        name_font = ImageFont.truetype(FONT_PATH, name_font_size)
-        info_font = ImageFont.truetype(FONT_PATH, info_font_size)
-        date_font = ImageFont.truetype(FONT_PATH, date_font_size)
-    except OSError:
-        # Agar shrift yuklab bo'lmasa, default shriftga qaytamiz
-        name_font = ImageFont.load_default()
-        info_font = ImageFont.load_default()
-        date_font = ImageFont.load_default()
+    # --- Matnni rasmga yozish ---
+    draw.text((300, 300), name, fill="black", font=font_name)
+    draw.text((300, 420), info, fill="black", font=font_info)
+    draw.text((300, 520), date, fill="black", font=font_date)
 
-    center_x = img_w // 2
+    # --- QR-KOD yaratish ---
+    bot_link = "https://t.me/YOUR_BOT"   # YOU BOT LINK HERE
+    qr = qrcode.make(bot_link)
+    qr = qr.resize((180, 180))
+    image.paste(qr, (image.width - 250, image.height - 250))
 
-    # Joylashuvlar - rasmga qarab moslashtiring
-    # Misol: ismi markazda va biroz tepada
-    name_y = int(img_h * 0.45)
-    info_y = name_y + int(img_h * 0.06)
-    date_y = info_y + int(img_h * 0.06)
-
-    # Matnni markazga chiziq bo'yicha chizish (ba'zi holatlarda max_width bilan siqish)
-    max_text_width = int(img_w * 0.8)
-
-    draw_centered_text(draw, name, name_font, center_x, name_y, max_width=max_text_width)
-    draw_centered_text(draw, info, info_font, center_x, info_y, max_width=max_text_width)
-    draw_centered_text(draw, date_text, date_font, center_x, date_y, max_width=max_text_width)
-
-    # Outputni BytesIO ga yozamiz va yuboramiz
+    # --- Rasmni yuborish ---
     img_io = io.BytesIO()
-    # PNG - shaffoflik yoki yuqori sifat uchun
-    image = image.convert("RGB")  # ba'zi brauzerlar uchun
-    image.save(img_io, "PNG", quality=95)
+    image.save(img_io, "PNG")
     img_io.seek(0)
-
-    # Foydalanuvchi uchun mos fayl nomi
-    filename = f"certificate_{name.replace(' ', '_')}.png"
 
     return send_file(
         img_io,
         mimetype="image/png",
         as_attachment=True,
-        download_name=filename
+        download_name="sertifikat.png"
     )
-
+\
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=8000, debug=True)

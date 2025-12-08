@@ -2,11 +2,68 @@ import telebot
 from telebot import types
 from datetime import datetime
 from app.calendar import create_newyear_image_styled
+from app.new_year_data import templates,congratulations
 import os
+from PIL import Image, ImageDraw, ImageFont
+import textwrap
 
-BOT_TOKEN = "8422556946:AAHfJPljk9em_6Uz8wWKnkEY7n73MItV_vc"   # BotFather bergan tokenni qo'ying
+BOT_TOKEN = "8422556946:AAEj6H7aqSi4yc5k5rPuxCgv6Khwl61MB9o"   # BotFather bergan tokenni qo'ying
 bot = telebot.TeleBot(BOT_TOKEN)
 
+user_page = {}  # foydalanuvchi hozirgi page indexini saqlaydi
+user_data = {}  # foydalanuvchi tanlagan template va tabrikni saqlash
+
+def send_template_slider(chat_id, index):
+    template = templates[index]
+
+    # Inline tugmalar
+    keyboard = types.InlineKeyboardMarkup()
+    prev_btn = types.InlineKeyboardButton("⬅️ Oldingi", callback_data=f"prev_{index}")
+    select_btn = types.InlineKeyboardButton("✔ Tanlash", callback_data=f"select_{index}")
+    next_btn = types.InlineKeyboardButton("➡️ Keyingi", callback_data=f"next_{index}")
+    keyboard.row(prev_btn, select_btn, next_btn)
+
+    # Rasm yo'li
+    template_path = f"static/templates/{template['preview']}"
+
+    # Rasmni ochish va Telegram uchun maksimal o'lchamga moslash
+    MAX_WIDTH = 1280
+    MAX_HEIGHT = 1280
+
+    img = Image.open(template_path)
+    img_format = img.format  # JPEG yoki PNG bo'lishi kerak
+
+    # Rasm juda katta bo'lsa, kamaytirish
+    img.thumbnail((MAX_WIDTH, MAX_HEIGHT))
+
+    # Telegramga yuborish uchun vaqtinchalik saqlash
+    temp_path = f"static/templates/_temp_{template['preview']}"
+    img.save(temp_path, format=img_format)
+
+    with open(temp_path, "rb") as img_file:
+        bot.send_photo(
+            chat_id,
+            img_file,
+            caption=f"📄 *{template['title']}* shablon\n{index+1}/{len(templates)}",
+            reply_markup=keyboard,
+            parse_mode="Markdown"
+        )
+
+def send_congratulations_slider(chat_id, index):
+    text = congratulations[index]
+
+    keyboard = types.InlineKeyboardMarkup()
+    prev_btn = types.InlineKeyboardButton("⬅️ Oldingi", callback_data=f"prev_congr_{index}")
+    select_btn = types.InlineKeyboardButton("✔ Tanlash", callback_data=f"select_congr_{index}")
+    next_btn = types.InlineKeyboardButton("➡️ Keyingi", callback_data=f"next_congr_{index}")
+    keyboard.row(prev_btn, select_btn, next_btn)
+
+    bot.send_message(
+        chat_id,
+        f"📄 *Tabrik:* {text}\n{index+1}/{len(congratulations)}",
+        reply_markup=keyboard,
+        parse_mode="Markdown"
+    )
 
 # /start komandasi
 @bot.message_handler(commands=['start'])
@@ -39,7 +96,7 @@ def start_message(message):
     # Clickable name
     clickable_name = f'<a href="{profile_link}">{full_name}</a>'
 
-    text = f"Assalomu alaykum, {clickable_name}! 👋\nProfilingizga o‘tish uchun ismingizni bosing."
+    text = f"<b>👋 Assalomu alaykum {clickable_name} botimizga xush kelibsiz.\n\n🔹 Kerakli bo'limni tanlang.</b>"
 
     bot.send_message(
         message.chat.id,
@@ -118,20 +175,128 @@ def guide_info(message):
 # Tabriklar bo'limi
 @bot.message_handler(func=lambda m: m.text == "🎉 Tabriklar")
 def open_tabrik_webapp(message):
-    webapp_url = "../tabrik"   # <-- sahifangiz URL
+    chat_id = message.chat.id
+    user_page[chat_id] = 0  # birinchi slayd
+    send_template_slider(chat_id, 0)
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_slider(call):
+    chat_id = call.message.chat.id
+    data = call.data
+
+    # TEMPLATE SLIDER
+    if data.startswith("next_") and not data.startswith("next_congr_"):
+        index = int(data.split("_")[1])
+        index = (index + 1) % len(templates)
+        user_page[chat_id] = index
+        bot.delete_message(chat_id, call.message.message_id)
+        send_template_slider(chat_id, index)
+
+    elif data.startswith("prev_") and not data.startswith("prev_congr_"):
+        index = int(data.split("_")[1])
+        index = (index - 1) % len(templates)
+        user_page[chat_id] = index
+        bot.delete_message(chat_id, call.message.message_id)
+        send_template_slider(chat_id, index)
+
+    elif data.startswith("select_") and not data.startswith("select_congr_"):
+        index = int(data.split("_")[1])
+        chosen = templates[index]
+        user_data[chat_id] = {"template": chosen}
+        bot.answer_callback_query(call.id, "Template tanlandi!")
+        bot.edit_message_caption(
+            chat_id=chat_id,
+            message_id=call.message.message_id,
+            caption=f"✔ Siz *{chosen['title']}* shablonni tanladingiz!",
+            parse_mode="Markdown"
+        )
+
+        # Tabrik slider boshlash
+        user_page[chat_id] = 0
+        send_congratulations_slider(chat_id, 0)
+
+    # CONGRATULATIONS SLIDER
+    elif data.startswith("next_congr_"):
+        index = int(data.split("_")[2])
+        index = (index + 1) % len(congratulations)
+        user_page[chat_id] = index
+        bot.delete_message(chat_id, call.message.message_id)
+        send_congratulations_slider(chat_id, index)
+
+    elif data.startswith("prev_congr_"):
+        index = int(data.split("_")[2])
+        index = (index - 1) % len(congratulations)
+        user_page[chat_id] = index
+        bot.delete_message(chat_id, call.message.message_id)
+        send_congratulations_slider(chat_id, index)
+
+    elif data.startswith("select_congr_"):
+        index = int(data.split("_")[2])
+        chosen_congr = congratulations[index]
+        user_data[chat_id]["congr"] = chosen_congr
+        bot.answer_callback_query(call.id, "Tabrik tanlandi!")
+        bot.send_message(chat_id, "🎉 Iltimos, ismingizni kiriting:")
+        bot.register_next_step_handler_by_chat_id(chat_id, add_name_to_template)
+
+def add_name_to_template(message):
+    chat_id = message.chat.id
+    user_name = message.text.strip()
+    data = user_data.get(chat_id)
+
+    if not data:
+        bot.send_message(chat_id, "Xatolik yuz berdi, iltimos boshidan boshlang.")
+        return
+
+    template = data["template"]
+    text = data["congr"]
+
+    # Rasmni ochish
+    template_path = f"static/templates/{template['preview']}"
+    img = Image.open(template_path)
+    if img.mode != "RGB":
+        img = img.convert("RGB")
+    img_format = img.format
+    MAX_SIZE = (1280, 1280)
+    img.thumbnail(MAX_SIZE)
+
+    draw = ImageDraw.Draw(img)
     
-    markup = types.InlineKeyboardMarkup()
-    btn = types.InlineKeyboardButton(
-        text="🎉 Tabrik yozish",
-        web_app=types.WebAppInfo(url=webapp_url)
-    )
+    # Fontlar
+    font_name = ImageFont.truetype("app/fonts/arial/ARIAL.ttf", 60)
+    font_text = ImageFont.truetype("app/fonts/arial/ARIAL.ttf", 40)
 
-    markup.add(btn)
+    # Greeting
+    greeting = "Assalomu alaykum"
+    bbox = draw.textbbox((0,0), greeting, font=font_text)  # (left, top, right, bottom)
+    w = bbox[2] - bbox[0]
+    h = bbox[3] - bbox[1]
+    draw.text((template['name_pos'][0]-w//2, template['name_pos'][1]-100), greeting, font=font_text, fill='black')
 
-    bot.send_message(
-        message.chat.id,
-        "Quyidagi tugmani bosing va tabrik yarating:",
-        reply_markup=markup
-    )
+    # Ism markazda
+    bbox = draw.textbbox((0,0), user_name, font=font_name)
+    w = bbox[2] - bbox[0]
+    h = bbox[3] - bbox[1]
+    draw.text((template['name_pos'][0]-w//2, template['name_pos'][1]), user_name, font=font_name, fill=template.get('name_color', 'black'))
+
+    # Tabrik matnini satrlarga ajratish
+    lines = textwrap.wrap(text, width=20)
+    y_text = template['info_pos'][1]
+    for line in lines:
+        bbox = draw.textbbox((0,0), line, font=font_text)
+        w = bbox[2] - bbox[0]
+        h = bbox[3] - bbox[1]
+        draw.text((template['info_pos'][0]-w//2, y_text), line, font=font_text, fill=template.get('info_color', 'black'))
+        y_text += h + 10
+
+
+    # Vaqtinchalik saqlash va yuborish
+    temp_path = f"static/templates/_temp_final_{chat_id}.jpg"
+    img.save(temp_path, format=img_format)
+
+    with open(temp_path, "rb") as img_file:
+        bot.send_photo(chat_id, img_file, caption="🎊 Sizning shaxsingizga mos tabrik tayyor! 🎊")
+
+    if os.path.exists(temp_path):
+        os.remove(temp_path)
 
 bot.infinity_polling()
