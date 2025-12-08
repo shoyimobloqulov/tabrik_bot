@@ -1,7 +1,3 @@
-from pathlib import Path
-font_path = Path(__file__).parent / "fonts" / "arial.ttf"
-font = ImageFont.truetype(str(font_path), 40)
-
 import telebot
 from telebot import types
 from datetime import datetime

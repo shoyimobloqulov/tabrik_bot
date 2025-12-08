@@ -1,5 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
-
+from pathlib import Path
+font_path = Path(__file__).parent / "fonts" / "arial.ttf"
+font = ImageFont.truetype(str(font_path), 40)
 def create_newyear_image_styled(
         input_image,
         output_image,
