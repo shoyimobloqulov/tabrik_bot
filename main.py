@@ -6,6 +6,7 @@ from app.new_year_data import templates,congratulations
 import os
 from PIL import Image, ImageDraw, ImageFont
 import textwrap
+import re
 
 BOT_TOKEN = "8422556946:AAEj6H7aqSi4yc5k5rPuxCgv6Khwl61MB9o"   # BotFather bergan tokenni qo'ying
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -250,53 +251,162 @@ def add_name_to_template(message):
     template = data["template"]
     text = data["congr"]
 
-    # Rasmni ochish
+    # ========================
+    # Rasmni ochish va RGBA rejimida ishlash
+    # ========================
     template_path = f"static/templates/{template['preview']}"
     img = Image.open(template_path)
-    if img.mode != "RGB":
-        img = img.convert("RGB")
+    if img.mode != "RGBA":
+        img = img.convert("RGBA")
+
     img_format = img.format
     MAX_SIZE = (1280, 1280)
     img.thumbnail(MAX_SIZE)
 
-    draw = ImageDraw.Draw(img)
-    
+    # Overlay yaratish (rangli emoji uchun)
+    overlay = Image.new("RGBA", img.size, (255, 255, 255, 0))
+    draw = ImageDraw.Draw(overlay)
+
+    # ========================
     # Fontlar
+    # ========================
     font_name = ImageFont.truetype("app/fonts/arial/ARIAL.ttf", 60)
     font_text = ImageFont.truetype("app/fonts/arial/ARIAL.ttf", 40)
+    font_emoji = ImageFont.truetype("app/fonts/seguiemj.ttf", 40)
 
+    # ========================
+    # Emoji ajratish funksiyasi
+    # ========================
+    def split_text_and_emoji(text):
+        """Matnni oddiy matn va emoji qismlariga ajratadi"""
+        # Emoji pattern (keng range)
+        emoji_pattern = re.compile(
+            "["
+            "\U0001F600-\U0001F64F"  # emoticons
+            "\U0001F300-\U0001F5FF"  # symbols & pictographs
+            "\U0001F680-\U0001F6FF"  # transport & map symbols
+            "\U0001F1E0-\U0001F1FF"  # flags
+            "\U00002702-\U000027B0"
+            "\U000024C2-\U0001F251"
+            "\U0001F900-\U0001F9FF"  # supplemental symbols
+            "]+", 
+            flags=re.UNICODE
+        )
+        
+        parts = []
+        last_end = 0
+        
+        for match in emoji_pattern.finditer(text):
+            # Emoji oldidagi matn
+            if match.start() > last_end:
+                parts.append(('text', text[last_end:match.start()]))
+            # Emoji
+            parts.append(('emoji', match.group()))
+            last_end = match.end()
+        
+        # Oxirgi matn
+        if last_end < len(text):
+            parts.append(('text', text[last_end:]))
+        
+        return parts
+
+    # ========================
+    # Aralash matn chizish funksiyasi
+    # ========================
+    def draw_mixed_text(draw, text, x, y, text_font, emoji_font, color):
+        """Matn va emojini aralash holda chizadi"""
+        parts = split_text_and_emoji(text)
+        current_x = x
+        
+        for part_type, content in parts:
+            if part_type == 'text':
+                draw.text((current_x, y), content, font=text_font, fill=color)
+                bbox = draw.textbbox((current_x, y), content, font=text_font)
+                current_x = bbox[2]
+            else:  # emoji
+                draw.text((current_x, y), content, font=emoji_font, embedded_color=True)
+                bbox = draw.textbbox((current_x, y), content, font=emoji_font)
+                current_x = bbox[2]
+        
+        return current_x
+
+    # ========================
     # Greeting
+    # ========================
     greeting = "Assalomu alaykum"
-    bbox = draw.textbbox((0,0), greeting, font=font_text)  # (left, top, right, bottom)
+    bbox = draw.textbbox((0, 0), greeting, font=font_text)
     w = bbox[2] - bbox[0]
-    h = bbox[3] - bbox[1]
-    draw.text((template['name_pos'][0]-w//2, template['name_pos'][1]-100), greeting, font=font_text, fill='black')
+    draw.text(
+        (template['name_pos'][0] - w // 2, template['name_pos'][1] - 60),
+        greeting,
+        font=font_text,
+        fill='black'
+    )
 
+    # ========================
     # Ism markazda
-    bbox = draw.textbbox((0,0), user_name, font=font_name)
+    # ========================
+    bbox = draw.textbbox((0, 0), user_name, font=font_name)
     w = bbox[2] - bbox[0]
-    h = bbox[3] - bbox[1]
-    draw.text((template['name_pos'][0]-w//2, template['name_pos'][1]), user_name, font=font_name, fill=template.get('name_color', 'black'))
+    draw.text(
+        (template['name_pos'][0] - w // 2, template['name_pos'][1]),
+        user_name,
+        font=font_name,
+        fill=template.get('name_color', 'black')
+    )
 
-    # Tabrik matnini satrlarga ajratish
-    lines = textwrap.wrap(text, width=20)
+    # ========================
+    # Text + emoji multi-line (RANGLI)
+    # ========================
+    max_chars_per_line = 25
+    lines = textwrap.wrap(text, width=max_chars_per_line)
     y_text = template['info_pos'][1]
+
     for line in lines:
-        bbox = draw.textbbox((0,0), line, font=font_text)
-        w = bbox[2] - bbox[0]
-        h = bbox[3] - bbox[1]
-        draw.text((template['info_pos'][0]-w//2, y_text), line, font=font_text, fill=template.get('info_color', 'black'))
-        y_text += h + 10
+        # Har bir qatorning kengligini hisoblash (markazlash uchun)
+        parts = split_text_and_emoji(line)
+        total_width = 0
+        
+        for part_type, content in parts:
+            if part_type == 'text':
+                bbox = draw.textbbox((0, 0), content, font=font_text)
+            else:
+                bbox = draw.textbbox((0, 0), content, font=font_emoji)
+            total_width += (bbox[2] - bbox[0])
+        
+        # Markazlangan x koordinata
+        start_x = template['info_pos'][0] - total_width // 2
+        
+        # Aralash matn va emoji chizish
+        draw_mixed_text(
+            draw, 
+            line, 
+            start_x, 
+            y_text, 
+            font_text, 
+            font_emoji, 
+            template.get('info_color', 'black')
+        )
+        
+        # Keyingi qatorga o'tish
+        bbox = draw.textbbox((0, 0), line, font=font_text)
+        y_text += (bbox[3] - bbox[1]) + 10
 
+    img = Image.alpha_composite(img, overlay)
 
-    # Vaqtinchalik saqlash va yuborish
-    temp_path = f"static/templates/_temp_final_{chat_id}.jpg"
-    img.save(temp_path, format=img_format)
+    # Temp fayl nomi
+    temp_path = f"out/final_{chat_id}.png"
 
+    # Rasmni saqlash
+    img.save(temp_path, format="PNG")
+
+    # Telegramga yuborish
     with open(temp_path, "rb") as img_file:
         bot.send_photo(chat_id, img_file, caption="🎊 Sizning shaxsingizga mos tabrik tayyor! 🎊")
 
+    # Agar kerak bo‘lsa faylni o‘chirib tashlash
     if os.path.exists(temp_path):
         os.remove(temp_path)
+
 
 bot.infinity_polling()

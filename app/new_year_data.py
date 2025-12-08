@@ -15,46 +15,11 @@ congratulations = [
 templates = [
     {
         "preview": 'SL-053121-43430-100.jpg',
-        "title": "Classic",
-        'name_pos': (700, 250),
-        'info_pos': (650, 350),
-        'date_pos': (400, 500),
-        'qr_pos': (650, 450),
-        'name_color':'black',
-        'info_color':'#222415',
-        'date_color': ''
+        "title": "NoClassic",
+        "name_pos": (700, 250),
+        "info_pos": (680, 330),
+        "name_color": "red",
+        "info_color": "#222415"
     },
-    {
-        "preview": 'SL-053121-43430-100.jpg',
-        "title": "Classic",
-        'name_pos': (400, 300),
-        'info_pos': (400, 400),
-        'date_pos': (400, 500),
-        'qr_pos': (650, 450)
-    },
-
-    {
-        "preview": 'SL-053121-43430-100.jpg',
-        "title": "Classic",
-        'name_pos': (400, 300),
-        'info_pos': (400, 400),
-        'date_pos': (400, 500),
-        'qr_pos': (650, 450)
-    },
-    {
-        "preview": 'SL-053121-43430-100.jpg',
-        "title": "Classic",
-        'name_pos': (400, 300),
-        'info_pos': (400, 400),
-        'date_pos': (400, 500),
-        'qr_pos': (650, 450)
-    },
-    {
-        "preview": 'SL-053121-43430-100.jpg',
-        "title": "Classic",
-        'name_pos': (400, 300),
-        'info_pos': (400, 400),
-        'date_pos': (400, 500),
-        'qr_pos': (650, 450)
-    }
+    
 ]

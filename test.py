@@ -9,8 +9,8 @@ user_name = "Shoyim Obloqulov"
 template = {
     "preview": 'SL-053121-43430-100.jpg',
     "title": "Classic",
-    "name_pos": (700, 300),
-    "info_pos": (680, 400),
+    "name_pos": (700, 250),
+    "info_pos": (680, 330),
     "name_color": "red",
     "info_color": "#222415"
 }
@@ -102,7 +102,7 @@ greeting = "Assalomu alaykum"
 bbox = draw.textbbox((0, 0), greeting, font=font_text)
 w = bbox[2] - bbox[0]
 draw.text(
-    (template['name_pos'][0] - w // 2, template['name_pos'][1] - 100),
+    (template['name_pos'][0] - w // 2, template['name_pos'][1] - 60),
     greeting,
     font=font_text,
     fill='black'
