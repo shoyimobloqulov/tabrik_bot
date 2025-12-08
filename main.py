@@ -391,6 +391,32 @@ def add_name_to_template(message):
         # Keyingi qatorga o'tish
         bbox = draw.textbbox((0, 0), line, font=font_text)
         y_text += (bbox[3] - bbox[1]) + 10
+    # ================================
+    # PASTKI O‘NGDA @tabrik2026bot YOZUVINI CHIQARISH
+    # ================================
+    bot_text = "@tabrik2026bot"
+    bot_font = ImageFont.truetype("app/fonts/arial/ARIAL.ttf", 24)
+    padding = 10
+
+    bbox = draw.textbbox((0, 0), bot_text, font=bot_font)
+    text_width = bbox[2] - bbox[0]
+    text_height = bbox[3] - bbox[1]
+
+    x = img.width - text_width - padding
+    y = img.height - text_height - padding
+
+    bg_padding = 10
+    bg_x1 = x - bg_padding
+    bg_y1 = y - bg_padding
+    bg_x2 = x + text_width + bg_padding
+    bg_y2 = y + text_height + bg_padding
+
+    draw.rectangle(
+        [bg_x1, bg_y1, bg_x2, bg_y2],
+        fill=(0, 0, 0, 150)
+    )
+
+    draw.text((x, y), bot_text, font=bot_font, fill="white")
 
     img = Image.alpha_composite(img, overlay)
 
@@ -402,7 +428,7 @@ def add_name_to_template(message):
 
     # Telegramga yuborish
     with open(temp_path, "rb") as img_file:
-        bot.send_photo(chat_id, img_file, caption="🎊 Sizning shaxsingizga mos tabrik tayyor! 🎊")
+        bot.send_photo(chat_id, img_file, caption="🎊 Sizga yoqadigan tabrik tayyor! 🎊")
 
     # Agar kerak bo‘lsa faylni o‘chirib tashlash
     if os.path.exists(temp_path):
