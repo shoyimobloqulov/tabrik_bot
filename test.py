@@ -7,12 +7,15 @@ import re
 chat_id = 123456789
 user_name = "Shoyim Obloqulov"
 template = {
-    "preview": 'SL-053121-43430-100.jpg',
+    "preview": 'bdcd02069048f3a6c9522d810648e6f8.jpg',
     "title": "Classic",
-    "name_pos": (700, 250),
-    "info_pos": (680, 330),
-    "name_color": "red",
-    "info_color": "#222415"
+    "name_pos": (440, 320),
+    "info_pos": (440, 410),
+    "name_color": "black",
+    "info_color": "black",
+    "title_color": "black",
+    'name_font_size': 50,
+    'info_font_size': 30
 }
 text = "🎄 Yangi yil muborak! Yangi yil sizga quvonch, omad va mustahkam sog'liq olib kelsin! 🌟"
 
@@ -35,9 +38,9 @@ draw = ImageDraw.Draw(overlay)
 # ========================
 # Fontlar
 # ========================
-font_name = ImageFont.truetype("app/fonts/arial/ARIAL.ttf", 60)
-font_text = ImageFont.truetype("app/fonts/arial/ARIAL.ttf", 40)
-font_emoji = ImageFont.truetype("app/fonts/seguiemj.ttf", 40)
+font_name = ImageFont.truetype("app/fonts/arial/ARIAL.ttf", template.get('name_font_size', 60))
+font_text = ImageFont.truetype("app/fonts/arial/ARIAL.ttf", template.get('info_font_size', 40))
+font_emoji = ImageFont.truetype("app/fonts/seguiemj.ttf", template.get('info_font_size', 40))
 
 # ========================
 # Emoji ajratish funksiyasi
@@ -98,7 +101,7 @@ draw.text(
     (template['name_pos'][0] - w // 2, template['name_pos'][1] - 60),
     greeting,
     font=font_text,
-    fill='black'
+    fill=template.get('name_color', 'black')
 )
 
 # ========================

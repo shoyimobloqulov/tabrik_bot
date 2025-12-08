@@ -151,7 +151,8 @@ def new_year_info(message):
 def admin_info(message):
     bot.send_message(
         message.chat.id,
-        "🧑‍💻 *Dasturchi:* @shoyimobloqulov\n\n"
+        "🧑‍💻 *Dasturchi:* @shoyimobloqulov\n"
+        "🧑‍💻 *Dastur dizayneri: Visoliddin Jaloliy\n\n"
         "🔷 *Biz bilan o'z virtual olamingizni yarating!*",
         parse_mode="Markdown"
     )
@@ -340,7 +341,7 @@ def add_name_to_template(message):
         (template['name_pos'][0] - w // 2, template['name_pos'][1] - 60),
         greeting,
         font=font_text,
-        fill='black'
+        fill=template.get('name_color', 'black')
     )
 
     # ========================
