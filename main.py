@@ -151,11 +151,10 @@ def new_year_info(message):
 def admin_info(message):
     bot.send_message(
         message.chat.id,
-        "🧑‍💻 *Dasturchi:* @shoyimobloqulov\n"
-        "🧑‍💻 *Dastur dizayneri: Visoliddin Jaloliy\n\n"
-        "🔷 *Biz bilan o'z virtual olamingizni yarating!*",
+        """🧑‍💻 *Dasturchi:* @shoyimobloqulov\n🧑‍💻 *Dastur dizayneri:* Visoliddin Jaloliy\n\n🔷 *Biz bilan o'z virtual olamingizni yarating!*""",
         parse_mode="Markdown"
     )
+
 
 # Qo'llanma haqida ma'lumot
 @bot.message_handler(func=lambda m: m.text == "📘 Qo'llanma")
