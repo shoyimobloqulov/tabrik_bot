@@ -61,13 +61,15 @@ templates = [
         "info_color": "black"
     },
     {
-        "preview": 'ce8af1daf9cfe11503e9bb15efdb9a9f.jpg',
+       "preview": 'ce8af1daf9cfe11503e9bb15efdb9a9f.jpg',
         "title": "Black Classic",
         "title_color": "white",
         "name_pos": (340, 500),
-        "info_pos": (330, 600),
+        "info_pos": (330, 570),
         "name_color": "white",
-        "info_color": "white"
+        "info_color": "white",
+        'name_font_size': 40,
+        'info_font_size': 30
     },
     {
         "preview": '9ec5021c5b9b657d97719f2b773bc94e.jpg',

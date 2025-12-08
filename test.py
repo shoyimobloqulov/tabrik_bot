@@ -7,16 +7,16 @@ import re
 chat_id = 123456789
 user_name = "Shoyim Obloqulov"
 template = {
-    "preview": 'bdcd02069048f3a6c9522d810648e6f8.jpg',
-    "title": "Classic",
-    "name_pos": (440, 320),
-    "info_pos": (440, 410),
-    "name_color": "black",
-    "info_color": "black",
-    "title_color": "black",
-    'name_font_size': 50,
-    'info_font_size': 30
-}
+        "preview": 'ce8af1daf9cfe11503e9bb15efdb9a9f.jpg',
+        "title": "Black Classic",
+        "title_color": "white",
+        "name_pos": (340, 500),
+        "info_pos": (330, 570),
+        "name_color": "white",
+        "info_color": "white",
+        'name_font_size': 40,
+        'info_font_size': 30
+    }
 text = "🎄 Yangi yil muborak! Yangi yil sizga quvonch, omad va mustahkam sog'liq olib kelsin! 🌟"
 
 # ========================

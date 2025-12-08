@@ -271,9 +271,9 @@ def add_name_to_template(message):
     # ========================
     # Fontlar
     # ========================
-    font_name = ImageFont.truetype("app/fonts/arial/ARIAL.ttf", 60)
-    font_text = ImageFont.truetype("app/fonts/arial/ARIAL.ttf", 40)
-    font_emoji = ImageFont.truetype("app/fonts/seguiemj.ttf", 40)
+    font_name = ImageFont.truetype("app/fonts/arial/ARIAL.ttf", template.get('name_font_size', 60))
+    font_text = ImageFont.truetype("app/fonts/arial/ARIAL.ttf", template.get('info_font_size', 40))
+    font_emoji = ImageFont.truetype("app/fonts/seguiemj.ttf", template.get('info_font_size', 40))
 
     # ========================
     # Emoji ajratish funksiyasi
