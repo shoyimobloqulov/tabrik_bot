@@ -9,7 +9,13 @@ import textwrap
 import re
 from pathlib import Path
 
-BOT_TOKEN = "8422556946:AAEj6H7aqSi4yc5k5rPuxCgv6Khwl61MB9o"   # BotFather bergan tokenni qo'ying
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+FONT_ARIAL = os.path.join(BASE_DIR, "app","fonts", "arial", "ARIAL.ttf")
+FONT_EMOJI = os.path.join(BASE_DIR, "app", "fonts", "seguiemj.ttf")
+print(FONT_ARIAL,FONT_EMOJI)
+
+BOT_TOKEN = "8422556946:AAFMxE-CwJKQLnol3A_WMhtoSs7ntib19CQ"   # BotFather bergan tokenni qo'ying
 bot = telebot.TeleBot(BOT_TOKEN)
 
 user_page = {}  # foydalanuvchi hozirgi page indexini saqlaydi
@@ -271,9 +277,10 @@ def add_name_to_template(message):
     # ========================
     # Fontlar
     # ========================
-    font_name = ImageFont.truetype("app/fonts/arial/ARIAL.ttf", template.get('name_font_size', 60))
-    font_text = ImageFont.truetype("app/fonts/arial/ARIAL.ttf", template.get('info_font_size', 40))
-    font_emoji = ImageFont.truetype("app/fonts/seguiemj.ttf", template.get('info_font_size', 40))
+    font_name = ImageFont.truetype(FONT_ARIAL, template.get('name_font_size', 60))
+    font_text = ImageFont.truetype(FONT_ARIAL, template.get('info_font_size', 40))
+    font_emoji = ImageFont.truetype(FONT_EMOJI, template.get('info_font_size', 40))
+
 
     # ========================
     # Emoji ajratish funksiyasi
@@ -396,7 +403,7 @@ def add_name_to_template(message):
     # PASTKI O‘NGDA @tabrik2026bot YOZUVINI CHIQARISH
     # ================================
     bot_text = "@tabrik2026bot"
-    bot_font = ImageFont.truetype("app/fonts/arial/ARIAL.ttf", 24)
+    bot_font = ImageFont.truetype(FONT_ARIAL, 24)
     padding = 10
 
     bbox = draw.textbbox((0, 0), bot_text, font=bot_font)

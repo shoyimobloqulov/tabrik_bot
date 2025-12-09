@@ -1,5 +1,11 @@
 from PIL import Image, ImageDraw, ImageFont
 from pathlib import Path
+import os
+# Fayl qayerda joylashganligini topamiz
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# FONT JOYLASHUVI — LOYIHAGA MOSLANG
+FONT_PATH = os.path.join(BASE_DIR, "fonts", "arial", "ARIAL.ttf")
 
 def create_newyear_image_styled(
         input_image,
@@ -42,14 +48,14 @@ def create_newyear_image_styled(
 
     # Matnlarni chizish
     for text, pos_y, font_size, color in texts:
-        font = ImageFont.truetype(font_path, font_size)
+        font = ImageFont.truetype(FONT_PATH, font_size)
         bbox = draw.textbbox((0, 0), text, font=font)
         text_width = bbox[2] - bbox[0]
         position = ((width - text_width) // 2, pos_y)
         draw_text_with_style(draw, position, text, font, fill=color)
 
     # Raqamni chizish (katta font bilan)
-    font_number = ImageFont.truetype(font_path, 200)
+    font_number = ImageFont.truetype(FONT_PATH, 200)
     bbox = draw.textbbox((0, 0), str(nm), font=font_number)
     number_width = bbox[2] - bbox[0]
     number_position = ((width - number_width) // 2, 800)
