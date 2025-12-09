@@ -13,8 +13,8 @@ from pathlib import Path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Font paths relative to root directory
-FONT_ARIAL = os.path.join(BASE_DIR, "app","fonts", "arial", "ARIAL.ttf")
-FONT_EMOJI = os.path.join(BASE_DIR, "app","fonts", "seguisym.ttf")
+FONT_ARIAL = os.path.join(BASE_DIR, "fonts", "arial", "ARIAL.ttf")
+FONT_EMOJI = os.path.join(BASE_DIR,"fonts", "seguisym.ttf")
 
 # Debug: Print actual paths
 print(f"BASE_DIR: {BASE_DIR}")
