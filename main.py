@@ -9,11 +9,6 @@ import textwrap
 import re
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent  # app/ papkasi
-FONT_PATH = BASE_DIR / "fonts" / "Roboto-Regular.ttf"
-
-font = ImageFont.truetype(str(FONT_PATH), 40)
-
 BOT_TOKEN = "8422556946:AAEj6H7aqSi4yc5k5rPuxCgv6Khwl61MB9o"   # BotFather bergan tokenni qo'ying
 bot = telebot.TeleBot(BOT_TOKEN)
 
