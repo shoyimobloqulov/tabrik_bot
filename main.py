@@ -9,11 +9,19 @@ import textwrap
 import re
 from pathlib import Path
 
+# BASE_DIR points to the directory containing main.py (root of project)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# Font paths relative to root directory
 FONT_ARIAL = os.path.join(BASE_DIR, "app","fonts", "arial", "ARIAL.ttf")
-FONT_EMOJI = os.path.join(BASE_DIR, "app", "fonts", "seguiemj.ttf")
-print(FONT_ARIAL,FONT_EMOJI)
+FONT_EMOJI = os.path.join(BASE_DIR, "app","fonts", "seguisym.ttf")
+
+# Debug: Print actual paths
+print(f"BASE_DIR: {BASE_DIR}")
+print(f"FONT_ARIAL: {FONT_ARIAL}")
+print(f"FONT_EMOJI: {FONT_EMOJI}")
+print(f"FONT_ARIAL exists: {os.path.exists(FONT_ARIAL)}")
+print(f"FONT_EMOJI exists: {os.path.exists(FONT_EMOJI)}")
 
 BOT_TOKEN = "8422556946:AAFMxE-CwJKQLnol3A_WMhtoSs7ntib19CQ"   # BotFather bergan tokenni qo'ying
 bot = telebot.TeleBot(BOT_TOKEN)
@@ -277,6 +285,7 @@ def add_name_to_template(message):
     # ========================
     # Fontlar
     # ========================
+    print(FONT_ARIAL,FONT_EMOJI)
     font_name = ImageFont.truetype(FONT_ARIAL, template.get('name_font_size', 60))
     font_text = ImageFont.truetype(FONT_ARIAL, template.get('info_font_size', 40))
     font_emoji = ImageFont.truetype(FONT_EMOJI, template.get('info_font_size', 40))
