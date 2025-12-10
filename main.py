@@ -13,8 +13,8 @@ from pathlib import Path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Font paths relative to root directory
-FONT_ARIAL = os.path.join(BASE_DIR, "fonts", "arial", "ARIAL.ttf")
-FONT_EMOJI = os.path.join(BASE_DIR,"fonts", "seguisym.ttf")
+FONT_ARIAL = os.path.join(BASE_DIR, "app","fonts", "arial", "ARIAL.ttf")
+FONT_EMOJI = os.path.join(BASE_DIR,"app","fonts", "seguisym.ttf")
 
 # Debug: Print actual paths
 print(f"BASE_DIR: {BASE_DIR}")
@@ -23,7 +23,7 @@ print(f"FONT_EMOJI: {FONT_EMOJI}")
 print(f"FONT_ARIAL exists: {os.path.exists(FONT_ARIAL)}")
 print(f"FONT_EMOJI exists: {os.path.exists(FONT_EMOJI)}")
 
-BOT_TOKEN = "8422556946:AAFMxE-CwJKQLnol3A_WMhtoSs7ntib19CQ"   # BotFather bergan tokenni qo'ying
+BOT_TOKEN = "8422556946:AAEEqjRBnhCfQlL1RbrvMRznoaGCJ5UlyWc"   # BotFather bergan tokenni qo'ying
 bot = telebot.TeleBot(BOT_TOKEN)
 
 user_page = {}  # foydalanuvchi hozirgi page indexini saqlaydi
@@ -145,8 +145,23 @@ def new_year_info(message):
         f"📆 Bugungi sana: {today.strftime('%d-%m-%Y')}\n"
         f"🎉 Yangi yil: 01-01-{today.year + 1}\n"
         f"⏳ Qolgan kunlar: *{days_left} kun*\n"
-        f"✨ Yangi yilga oz qoldi, tayyorgarlikni boshlang!"
+        f"✨ Yangi yilga oz qoldi, tayyorgarlikni boshlang!\n\n"
+        f"```\n"
+        f"        ★\n"
+        f"       /|\\\n"
+        f"      /*|O\\\n"
+        f"     /*/|\\*\\\n"
+        f"    /X/O|*\\X\\\n"
+        f"   /*/X/|\\O\\*\\\n"
+        f"  /O/*/X|*\\O\\X\\\n"
+        f" /X/O/*/|\\*\\O\\*\\\n"
+        f"/O/X/*/O|*\\X\\*\\O\\\n"
+        f"       |'|\n"
+        f"      /_\\_\\\n"
+        f"```"
     )
+
+
 
     # Rasmni jonatish
     with open(output_image, "rb") as photo:
