@@ -17,6 +17,7 @@ def create_newyear_image_styled(
     nm: qancha kun qolgani (raqam)
     font_path: .ttf font fayl
     """
+    # Kiruvchi rasmni ochish
     img = Image.open(input_image)
     draw = ImageDraw.Draw(img)
     width, height = img.size
@@ -49,18 +50,22 @@ def create_newyear_image_styled(
     
     # Matnlarni chizish
     for text, pos_y, font_size, color in texts:
-        font = ImageFont.truetype(font_path, font_size)  # font_path ishlatildi
+        font = ImageFont.truetype(font_path, font_size)
         bbox = draw.textbbox((0, 0), text, font=font)
         text_width = bbox[2] - bbox[0]
         position = ((width - text_width) // 2, pos_y)
         draw_text_with_style(draw, position, text, font, fill=color)
     
     # Raqamni chizish (katta font bilan)
-    font_number = ImageFont.truetype(font_path, 200)  # font_path ishlatildi
+    font_number = ImageFont.truetype(font_path, 200)
     bbox = draw.textbbox((0, 0), str(nm), font=font_number)
     number_width = bbox[2] - bbox[0]
     number_position = ((width - number_width) // 2, 800)
     draw_text_with_style(draw, number_position, str(nm), font_number, fill="red")
     
+    # Papka mavjudligini tekshirish va yaratish
+    os.makedirs(os.path.dirname(output_image), exist_ok=True)
+    
+    # Rasmni saqlash
     img.save(output_image)
     return output_image
