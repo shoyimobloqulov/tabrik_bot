@@ -6,7 +6,7 @@ def create_newyear_image_styled(
     input_image,
     output_image,
     nm,
-    font_path="app/fonts/arial/ARIALBD.ttf"
+    font_path="app/fonts/arial/ARIALBD.TTF"
 ):
     """
     Rasm ustiga Yangi yil tabrigi va raqam qo'yish funksiyasi

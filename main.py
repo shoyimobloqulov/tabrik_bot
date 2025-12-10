@@ -23,7 +23,11 @@ print(f"FONT_EMOJI: {FONT_EMOJI}")
 print(f"FONT_ARIAL exists: {os.path.exists(FONT_ARIAL)}")
 print(f"FONT_EMOJI exists: {os.path.exists(FONT_EMOJI)}")
 
-BOT_TOKEN = "8422556946:AAEEqjRBnhCfQlL1RbrvMRznoaGCJ5UlyWc"   # BotFather bergan tokenni qo'ying
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+
+if BOT_TOKEN is None:
+    raise Exception("BOT_TOKEN topilmadi! Railway Variables bo'limiga qo'shing.")
+
 bot = telebot.TeleBot(BOT_TOKEN)
 
 user_page = {}  # foydalanuvchi hozirgi page indexini saqlaydi
