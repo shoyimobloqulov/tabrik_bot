@@ -1,14 +1,14 @@
 congratulations = [
     "🎄 Yangi yil muborak! Yangi yil sizga quvonch, omad va mustahkam sog‘liq olib kelsin! 🌟",
-    "✨ 2025-yil hayotingizda yangi eshiklar ochilsin! Har bir kuningiz baxt va baraka bilan to‘lsin!",
+    "✨ 2026-yil hayotingizda yangi eshiklar ochilsin! Har bir kuningiz baxt va baraka bilan to‘lsin!",
     "🎁 Yangi yil bilan! Ezgu niyatlaringiz ro‘yobga chiqsin, barcha ishlaringizda zafar yor bo‘lsin!",
     "❄️ Qorbobo kabi quvonch olib keladigan, porloq kelajak sari yetaklaydigan yil bo‘lsin!",
     "🌟 Yangi yilda barcha tashvishlar ortda qolib, faqat baxtiyor kunlar sizni qarshi olsin!",
     "🎉 Yangi yil bilan! Yaqinlaringiz bilan tinchlik, totuvlik va mehr-oqibatda bo‘ling!",
-    "⛄ 2025-yil siz uchun muvaffaqiyatlar, kutilmagan yaxshi yangiliklar va cheksiz quvonch yili bo‘lsin!",
+    "⛄ 2026-yil siz uchun muvaffaqiyatlar, kutilmagan yaxshi yangiliklar va cheksiz quvonch yili bo‘lsin!",
     "💫 Yangi yil hayotingizni yorqin ranglar bilan bezasin! Xonadoningizda fayz va baraka bo‘lsin!",
     "🎇 Yangi yilda qalbingizdagi barcha orzular ushalib, hayotda eng go‘zal sahifalar ochilsin!",
-    "🌠 2025-yil sizga yangi imkoniyatlar, ilhom va omad olib kelsin!"
+    "🌠 2026-yil sizga yangi imkoniyatlar, ilhom va omad olib kelsin!"
 ]
 
 
