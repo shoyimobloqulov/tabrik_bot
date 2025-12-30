@@ -430,7 +430,7 @@ def add_name_to_template(message):
     # ================================
     # PASTKI O‘NGDA @tabrik2026bot YOZUVINI CHIQARISH
     # ================================
-    bot_text = "@tabrik2026bot"
+    bot_text = ""
     bot_font = ImageFont.truetype(FONT_ARIAL, 24)
     padding = 10
 
